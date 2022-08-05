@@ -1,0 +1,43 @@
+import java.io.*; 
+class Main { 
+    public static void main(String args[]) throws IOException { 
+        Yylex lex = new Yylex(new BufferedReader(new FileReader(new File("inp3.txt")))); 
+        Token token = lex.yylex(); 
+        while(token.text != null ) { 
+            token = lex.yylex();  
+        } 
+    } 
+} 
+class Token{ 
+    String text; 
+    Token(String t) { 
+        text = t; 
+    } 
+} 
+%% 
+%public 
+%class Yylex 
+%type void
+digit = [0-9] 
+letter = [a-zA-Z] 
+special = [!@#$%\^&*()_+\;,.=]
+whitespace = [ \t\n]
+%type Token 
+%eofval{ 
+    return new Token(null); 
+%eofval} 
+%% 
+"//".* {System.out.print("<SINGLE_COMMENT"+">");}
+"/*".*"*/" {System.out.print("<MULTI_COMMENT"+">");}
+"if" {System.out.print("<IF"+">");}
+"for" {System.out.print("<FOR"+">");}
+"while" {System.out.print("<WHILE"+">");}
+"int" {System.out.print("<INT"+">");}
+"return" {System.out.print("<RETURN"+">");}
+({letter})({letter}|{digit})* {System.out.print("<ID,"+yytext()+">");}
+{digit}+ {System.out.print("<INT_CONST,"+yytext()+">");}
+{digit}+(.){digit}+ {System.out.print("<FLOAT_CONST,"+yytext()+">");}
+{whitespace}+ {System.out.print(yytext());} 
+(\{) {System.out.print("<OPEN_PAREN,"+yytext()+">");}
+(\}) {System.out.print("<CLOSE_PAREN,"+yytext()+">");}
+. {System.out.print("<SYMBOL>");}
