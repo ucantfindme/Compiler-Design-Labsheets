@@ -1,0 +1,64 @@
+import java.io.*; 
+class Main { 
+    public static void main(String args[]) throws IOException { 
+        Yylex lex = new Yylex(new BufferedReader(new FileReader(new File("inp.txt")))); 
+        Token token = lex.yylex(); 
+        while(token.text != null ) { 
+            token = lex.yylex();  
+        } 
+    } 
+} 
+class Token{ 
+    String text; 
+    Token(String t) { 
+        text = t; 
+    } 
+} 
+%% 
+%public 
+%class Yylex 
+%type void
+string = "\"".*"\""
+digit = [0-9] 
+letter = [a-zA-Z] 
+special = [!@#$%\^&*()_+\;,.=]
+arithmetic = "+"|"-"|"*"|"/"|"++"|"--"
+logical = "&&"|"\|\|"|"!"|"\^"
+relational = ">"|"<"|"<="|">="|"=="|"!="
+whitespace = [ \t\n]
+%type Token 
+%eofval{ 
+    return new Token(null); 
+%eofval} 
+%% 
+"//".* {System.out.print("<SINGLE_COMMENT>");}
+"/*".*"*/" {System.out.print("<MULTI_COMMENT>");}
+"#include<".+">" {System.out.print("<INCLUDE>");}
+"=" {System.out.print("<ASSIGN>");}
+"main" {System.out.print("<MAIN>");}
+"if" {System.out.print("<IF>");}
+"for" {System.out.print("<FOR>");}
+"while" {System.out.print("<WHILE>");}
+"int" {System.out.print("<INT>");}
+"char" {System.out.print("<CHAR>");}
+"return" {System.out.print("<RETURN>");}
+"switch" {System.out.print("<SWITCH>");}
+"printf" {System.out.print("<PRINTF>");}
+"scanf" {System.out.print("<SCANF>");}
+"case" {System.out.print("<CASE>");}
+"break" {System.out.print("<BREAK>");}
+"{" {System.out.print("<LPAREN>");}
+"}" {System.out.print("<RPAREN>");}
+"(" {System.out.print("<LBRAC>");}
+")" {System.out.print("<RBRAC>");}
+";" {System.out.print("<SEMI>");}
+"," {System.out.print("<COMMA>");}
+{arithmetic} {System.out.print("<ARITHMETIC,"+yytext()+">");}
+{logical} {System.out.print("<LOGICAL,"+yytext()+">");}
+{relational} {System.out.print("<RELATIONAL,"+yytext()+">");}
+{string} {System.out.println("<STR_CONST>");}
+({letter})({letter}|{digit})* {System.out.print("<ID,"+yytext()+">");}
+{digit}+ {System.out.print("<INT_CONST,"+yytext()+">");}
+{digit}+(.){digit}+ {System.out.print("<FLOAT_CONST,"+yytext()+">");}
+{whitespace}+ {System.out.print(yytext());} 
+. {System.out.print("<ERROR>");}
