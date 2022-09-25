@@ -1,0 +1,15 @@
+import java_cup.runtime.*;
+scan with {: return getScanner().next_token(); :};
+terminal INT,STRING,SEMI,COMMA,ID, SPACE, EOFILE,ASSIGN,STRING_VALUE,INT_VALUE, FLOAT, CHAR,VAR, FLOAT_VALUE,CHAR_VALUE,CONST,NULL,OPEN_SQR,CLO_SQR,OPEN_CUR,CLO_CUR,MUL,DIV,MOD,ADD,SUB;
+non terminal prog, stmt, decln, varlist, type, s, value,arrval,expr,oper;
+precedence left MUL, DIV, MOD, ADD, SUB;
+s::=prog {: System.out.println("Valid declaration"); :}
+EOFILE{:System.exit(0);:} ;
+prog::=prog stmt |stmt ;
+stmt::=decln;
+decln::=type SPACE varlist SEMI| VAR SPACE type SPACE varlist SEMI| CONST SPACE type SPACE ID ASSIGN value SEMI | type SPACE ID OPEN_SQR INT_VALUE CLO_SQR SEMI | type SPACE ID OPEN_SQR INT_VALUE CLO_SQR ASSIGN OPEN_CUR arrval SEMI;
+oper::=MUL | DIV | MOD | ADD | SUB;
+arrval::=value COMMA arrval | value CLO_CUR;
+value::=INT_VALUE | STRING_VALUE | FLOAT_VALUE | CHAR_VALUE | NULL | ID;
+type::=INT | STRING | FLOAT | CHAR;
+varlist::=ID COMMA varlist | ID ASSIGN value COMMA varlist| ID ASSIGN value |ID;

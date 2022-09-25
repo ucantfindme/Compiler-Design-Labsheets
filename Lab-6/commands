@@ -1,0 +1,4 @@
+jflex declaration    
+java java_cup.Main declaration.cup
+javac *.java 
+java Main
